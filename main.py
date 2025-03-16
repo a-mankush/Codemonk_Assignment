@@ -6,6 +6,7 @@ import gdown
 import streamlit as st
 import tensorflow as tf
 from matplotlib import pyplot as plt
+from PIL import Image
 
 from download_model import download_folder_from_google_drive, download_model
 from utils import decode_and_resize, load_encoder
@@ -62,26 +63,32 @@ def main():
         st.error("Model is not able to load")
 
     st.title("Fashion Product Predictor")
-    uploaded_file = st.file_uploader("Upload an image...")
-    if uploaded_file:
-        preds_probs = model.predict(
-            tf.constant([decode_and_resize(uploaded_file).numpy()])
-        )
-        preds = [tf.argmax(pred, axis=1) for pred in preds_probs]
-        image = plt.imread(uploaded_file)
-        plt.imshow(image)
-        plt.show()
+    uploaded_file = st.file_uploader("Upload an image...", type=["jpg", "jpeg"])
 
+    if uploaded_file:
+        # Process image
+        processed_img = decode_and_resize(uploaded_file)
+
+        # Add batch dimension and predict
+        preds_probs = model.predict(tf.expand_dims(processed_img, axis=0))
+
+        # Get class predictions
+        preds = [tf.argmax(pred, axis=1).numpy()[0] for pred in preds_probs]
+
+        # Display image
+        st.image(
+            Image.open(uploaded_file), caption="Uploaded Image", use_column_width=True
+        )
+
+        # Show predictions
         out = ["articleType", "baseColour", "gender", "season"]
+        result = {}
         for p, o in zip(preds, out):
-            # print(t)
-            # print(p)
-            print(
-                f"Predictions {o}: ",
-                loaded_encoders_dict[o].inverse_transform(p),
-                end=" ,",
-            )
+            decoded = loaded_encoders_dict[o].inverse_transform([p])[0]
+            result[o] = decoded
+            st.write(f"**{o}**: {decoded}")
 
 
 if __name__ == "__main__":
     main()
+
