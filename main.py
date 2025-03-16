@@ -10,7 +10,7 @@ from matplotlib import pyplot as plt
 from download_model import download_folder_from_google_drive, download_model
 from utils import decode_and_resize, load_encoder
 
-loaded_encoders_dict = load_encoder("artifacts\saved_encoders_dictionary.pkl")
+loaded_encoders_dict = load_encoder("artifacts/saved_encoders_dictionary.pkl")
 
 model_path = Path("models/multioutput_model_resnet_v2.keras")
 
