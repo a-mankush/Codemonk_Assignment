@@ -9,29 +9,18 @@ def load_encoder(path):
     return saved_loaded_encoders_dict
 
 
-def decode_and_resize(image_path, target_height=224, target_width=224):
-    """
-    Decode a JPEG image from a file path and resize it to target dimensions.
+def decode_and_resize(uploaded_file, target_size=(224, 224)):
 
-    Args:
-        image_path (str): Path to the JPEG image file
-        target_height (int): Target height for resizing, default 224
-        target_width (int): Target width for resizing, default 224
+    # 1. Read the file bytes
+    image_bytes = uploaded_file.read()
 
-    Returns:
-        tf.Tensor: Decoded and resized image tensor with shape (target_height, target_width, 3)
-                  and values normalized to [0, 1] range
-    """
-    # Read the file contents
-    image_data = tf.io.read_file(image_path)
+    # 2. Decode image from bytes
+    image = tf.image.decode_image(image_bytes, channels=3)
 
-    # Decode the JPEG image
-    image = tf.io.decode_jpeg(image_data, channels=3)
-
-    # Convert to float32 and normalize to [0, 1]
+    # 3. Convert to float32 and normalize
     image = tf.image.convert_image_dtype(image, tf.float32)
 
-    # Resize the image to target dimensions
-    resized_image = tf.image.resize(image, [target_height, target_width])
+    # 4. Resize to target size
+    image = tf.image.resize(image, target_size)
 
-    return resized_image
+    return image
