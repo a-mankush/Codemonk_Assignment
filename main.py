@@ -64,6 +64,10 @@ def main():
 
     st.title("Fashion Product Predictor")
     uploaded_file = st.file_uploader("Upload an image...", type=["jpg", "jpeg"])
+    with st.expander("Some example text to test the model"):
+        """
+        amazon link: https://www.amazon.in/Allen-Solly-Regular-T-Shirt-ASKPQRGF701338_Medium/dp/B08KTVFFHF/?_encoding=UTF8&pd_rd_w=xZX3J&content-id=amzn1.sym.6a567e3d-fd9a-4932-aa05-d0107e1bcce7&pf_rd_p=6a567e3d-fd9a-4932-aa05-d0107e1bcce7&pf_rd_r=WNG42RV6S66NB0SHTKVD&pd_rd_wg=Uvn9b&pd_rd_r=d50d408a-84d0-4ba9-9870-b025c1b9122c&ref_=pd_hp_d_btf_a2i_gw_cml&th=1&psc=1
+        """
 
     if uploaded_file:
         # Process image
@@ -77,7 +81,10 @@ def main():
 
         # Display image
         st.image(
-            Image.open(uploaded_file), caption="Uploaded Image", use_column_width=True
+            Image.open(uploaded_file),
+            caption="Uploaded Image",
+            width=300,  # Adjust this value to control size
+            use_column_width=False,  # Disable auto-sizing
         )
 
         # Show predictions
@@ -91,4 +98,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
